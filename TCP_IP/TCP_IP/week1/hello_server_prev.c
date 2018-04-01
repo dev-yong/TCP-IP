@@ -36,10 +36,14 @@ int main(int argc, char *argv[])
         error_handling("socket() error");
     
     memset(&serv_addr, 0 , sizeof(serv_addr)); // 메모리 할당을 받음.
+    //sin_zero에 모두 0으로 채우기 위하여
     serv_addr.sin_family=AF_INET;
-    serv_addr.sin_addr.s_addr=htonl(INADDR_ANY); // sin_addr : ip 주소 입력. 시스탬 내부적으로 처리
     serv_addr.sin_port=htons(atoi(argv[1])); // 사용자가 입력한 port 번호 할당
+    //htons : host to network , atoi : string to int
+    serv_addr.sin_addr.s_addr=htonl(INADDR_ANY); // sin_addr : ip 주소 입력. 시스탬 내부적으로 처리
+    //INADDR_AYN : 컴퓨터의 주소를 알아서 인식.
     
+    //sockaddr_in -> sockaddr
     if(bind(serv_sock,(struct sockaddr*) &serv_addr,sizeof(serv_addr))==-1) // socket ip 주소 할당
         error_handling("bind() error");
     

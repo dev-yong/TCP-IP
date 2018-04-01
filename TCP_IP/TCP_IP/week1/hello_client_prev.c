@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in serv_addr;
     char message[30];
     int str_len;
+    int idx=0, read_len=0;
     
     if(argc !=3)
     {
@@ -44,11 +45,11 @@ int main(int argc, char *argv[])
 //        error_handling("read() error!");
 //    }
     
-    while (read_len = read(sock, &message[idx++],1)) {
-        if(read_len==-1) {
+    while (read_len == read(sock, &message[idx++], 1)) {
+        if(read_len == -1) {
             error_handling("read() error!");
         }
-        str_len +=read_len;
+        str_len += read_len;
     }
     
     printf("Message from server : %s \n", message);
