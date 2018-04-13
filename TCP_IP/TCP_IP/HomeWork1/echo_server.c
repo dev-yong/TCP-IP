@@ -13,8 +13,7 @@ int main(int argc, char *argv[]) {
     char message[BUF_SIZE];
     int str_len, i;
     
-    int port_Number = atoi(argv[1]);
-    
+    int port_Number = atoi(argv[1]); //convert char * to int
     struct sockaddr_in serv_adr, clnt_adr;
     socklen_t clnt_adr_sz;
     
@@ -24,6 +23,7 @@ int main(int argc, char *argv[]) {
     }
     
     serv_sock = socket(PF_INET, SOCK_STREAM, 0);
+    //create socket. socket method return file descriptor. PF_INET : IPv4, SOCK_STREAM : Connection Oriented(TCP), 0 : TCP (Need to replace 'IPROTO_TCP')
     if(serv_sock == -1) {
         error_handling("socket() error");
     }
@@ -32,12 +32,13 @@ int main(int argc, char *argv[]) {
     serv_adr.sin_family = AF_INET;
     serv_adr.sin_port = htons(port_Number);
     serv_adr.sin_addr.s_addr = htonl(INADDR_ANY);
-    
+    //Network : Big-Endian, Host : Little-Endian. So need to convert Little-Endian to Big-Endian using htons method
+    //port : htons, ip address : htonl
     if(bind(serv_sock, (struct sockaddr *)&serv_adr, sizeof(serv_adr)) == -1) {
         error_handling("bind() error");
     }
     
-    if(listen(serv_sock, 5) == -1) {
+    if(listen(serv_sock, 5) == -1) { //listen(socket file descriptor, queue size)
         error_handling("listen() error");
     }
     
@@ -50,6 +51,10 @@ int main(int argc, char *argv[]) {
         }
         else {
             printf("Connected client %d \n", i+1);
+            printf("Clinet %d's IP address :  %s\n", i+1, inet_ntoa(clnt_adr.sin_addr));
+            //clnt_adr.sin_addr : int. inet_ntoa : convert int to char * (123 -> 127.0.0.1)
+            printf("Clinet %d's port number :  %d\n", i+1, ntohs(clnt_adr.sin_port) );
+            //clnt_adr.sin_port is using little-Endian need to convert to big-endian
         }
         
         while((str_len = read(clnt_sock, message, BUF_SIZE)) != 0) {
